@@ -2,8 +2,12 @@
 {% block content %}
 <div class="container mt-4">
   <h2>报警记录</h2>
+  {% if perms.alarms.add_alarm %}
   <div class="mb-3 text-end">
-    <a href="{% url 'alarms:add' %}" class="btn btn-success">+ 新建报警</a>
+    <a href="{% url 'alarms:add' %}" class="btn btn-success btn-sm">+ 新建报警</a>
+  </div>
+  {% endif %}
+  <div class="mb-3 text-end">
   </div>
   <table class="table table-bordered table-striped align-middle">
     <thead>
