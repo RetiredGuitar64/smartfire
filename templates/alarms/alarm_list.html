@@ -2,6 +2,9 @@
 {% block content %}
 <div class="container mt-4">
   <h2>报警记录</h2>
+  <div class="mb-3 text-end">
+    <a href="{% url 'alarms:add' %}" class="btn btn-success">+ 新建报警</a>
+  </div>
   <table class="table table-bordered table-striped align-middle">
     <thead>
       <tr>
