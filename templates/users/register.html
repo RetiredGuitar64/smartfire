@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}注册 · 智慧消防{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 85vh;">
+  <div class="card shadow-lg border-0" style="width: 450px; border-radius: 1rem;">
+    <div class="card-body p-4">
+      <h3 class="text-center mb-4 fw-bold text-success">创建新账户</h3>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.errors %}
+          <div class="alert alert-danger py-2">请检查输入是否正确</div>
+        {% endif %}
+
+        <div class="mb-3">
+          <label for="id_username" class="form-label fw-semibold">用户名</label>
+          <input type="text" name="username" id="id_username" class="form-control form-control-lg" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="id_password1" class="form-label fw-semibold">密码</label>
+          <input type="password" name="password1" id="id_password1" class="form-control form-control-lg" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="id_password2" class="form-label fw-semibold">确认密码</label>
+          <input type="password" name="password2" id="id_password2" class="form-control form-control-lg" required>
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-success btn-lg">注册</button>
+        </div>
+      </form>
+
+      <div class="text-center mt-3">
+        <span class="text-muted">已经有账号？</span>
+        <a href="/users/login/" class="fw-semibold">登录</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

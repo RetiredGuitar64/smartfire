@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}智慧消防管理系统{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 简单引入Bootstrap（CDN），便于快速观感；生产可改为本地静态文件 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">SmartFire</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="/stats/dashboard/">仪表盘</a></li>
+        <li class="nav-item"><a class="nav-link" href="/devices/">设备</a></li>
+        <li class="nav-item"><a class="nav-link" href="/alarms/">报警</a></li>
+      </ul>
+      <ul class="navbar-nav">
+        {% if request.user.is_authenticated %}
+          <li class="nav-item"><span class="nav-link">你好，{{ request.user.username }}</span></li>
+          <li class="nav-item"><a class="nav-link" href="/users/logout/">退出</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="/users/login/">登录</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-4">
+  {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

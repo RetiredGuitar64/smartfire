@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}仪表盘 · 智慧消防管理系统{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">仪表盘</h1>
+
+<div class="row g-3">
+  <!-- 设备状态统计 -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">设备状态</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            正常 <span class="badge bg-success rounded-pill">{{ device_counts.normal|default:0 }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            故障 <span class="badge bg-warning text-dark rounded-pill">{{ device_counts.fault|default:0 }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            离线 <span class="badge bg-secondary rounded-pill">{{ device_counts.offline|default:0 }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 报警数量统计 -->
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">报警数量</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            活跃报警 <span class="badge bg-danger rounded-pill">{{ alarm_counts.active|default:0 }}</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            已恢复 <span class="badge bg-success rounded-pill">{{ alarm_counts.cleared|default:0 }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 最新报警 -->
+<div class="card border-0 shadow-sm mt-4">
+  <div class="card-body">
+    <h5 class="card-title">最新报警</h5>
+    {% if latest_alarms %}
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>设备</th>
+              <th>级别</th>
+              <th>状态</th>
+              <th>时间</th>
+              <th>消息</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for a in latest_alarms %}
+            <tr>
+              <td>{{ a.id }}</td>
+              <td>{{ a.device.name }}</td>
+              <td>
+                {% if a.level == 'high' %}
+                  <span class="badge bg-danger">高</span>
+                {% elif a.level == 'medium' %}
+                  <span class="badge bg-warning text-dark">中</span>
+                {% else %}
+                  <span class="badge bg-info text-dark">低</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if a.status == 'active' %}
+                  <span class="badge bg-danger">活跃</span>
+                {% else %}
+                  <span class="badge bg-success">已恢复</span>
+                {% endif %}
+              </td>
+              <td>{{ a.created_at|date:"Y-m-d H:i:s" }}</td>
+              <td class="text-truncate" style="max-width: 320px;">{{ a.message }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">暂无报警数据。</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}登录{% endblock %}
+{% block content %}
+<div class="container mt-5" style="max-width: 400px;">
+  <h3 class="text-center mb-3">系统登录</h3>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">用户名</label>
+      <input type="text" name="username" class="form-control" required autofocus>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">密码</label>
+      <input type="password" name="password" class="form-control" required>
+    </div>
+    <button class="btn btn-primary w-100" type="submit">登录</button>
+  </form>
+  <div class="text-center mt-3">
+    <a href="{% url 'users:register' %}">没有账号？注册</a>
+  </div>
+</div>
+{% endblock %}

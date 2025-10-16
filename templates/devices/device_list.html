@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}设备管理 · 智慧消防{% endblock %}
+{% block content %}
+<h1 class="mb-4">设备列表</h1>
+
+<form class="mb-3" method="get">
+  <div class="input-group">
+    <input type="text" name="q" class="form-control" placeholder="搜索设备名称或位置..." value="{{ q }}">
+    <button class="btn btn-primary" type="submit">搜索</button>
+  </div>
+</form>
+
+{% if devices %}
+<div class="table-responsive">
+  <table class="table table-striped table-sm align-middle">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>名称</th>
+        <th>类型</th>
+        <th>位置</th>
+        <th>状态</th>
+        <th>创建时间</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in devices %}
+      <tr>
+        <td>{{ d.id }}</td>
+        <td>{{ d.name }}</td>
+        <td>{{ d.device_type }}</td>
+        <td>{{ d.location }}</td>
+        <td>
+          {% if d.status == 'normal' %}
+            <span class="badge bg-success">正常</span>
+          {% elif d.status == 'fault' %}
+            <span class="badge bg-warning text-dark">故障</span>
+          {% else %}
+            <span class="badge bg-secondary">离线</span>
+          {% endif %}
+        </td>
+        <td>{{ d.created_at|date:"Y-m-d H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-muted">暂无设备记录。</p>
+{% endif %}
+{% endblock %}
