@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>报警记录</h2>
+    {% if perms.alarms.add_alarm %}
+    {% endif %}
+  </div>
+
+  <table class="table table-striped table-hover align-middle">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>设备</th>
+        <th>类型</th>
+        <th>状态</th>
+        <th>时间</th>
+        <th>描述</th>
+        {% if perms.alarms.change_alarm or perms.alarms.delete_alarm %}
+        <th style="width:140px">操作</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in alarms %}
+      <tr>
+        <td>{{ a.id }}</td>
+        <td>{{ a.device.name }}</td>
+
+        {# 依次安全判断存在性 #}
+        <td>
+          {% if a.alarm_type %}
+            {{ a.alarm_type }}
+          {% elif a.type %}
+            {{ a.type }}
+          {% elif a.category %}
+            {{ a.category }}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+
+        <td>{{ a.status }}</td>
+
+        <td>
+          {% if a.timestamp %}{{ a.timestamp|date:"Y-m-d H:i" }}
+          {% elif a.created_at %}{{ a.created_at|date:"Y-m-d H:i" }}
+          {% elif a.time %}{{ a.time|date:"Y-m-d H:i" }}
+          {% else %}-{% endif %}
+        </td>
+
+        <td>
+          {% if a.description %}{{ a.description }}
+          {% elif a.message %}{{ a.message }}
+          {% elif a.details %}{{ a.details }}
+          {% elif a.content %}{{ a.content }}
+          {% elif a.note %}{{ a.note }}
+          {% else %}-{% endif %}
+        </td>
+
+        {% if perms.alarms.change_alarm or perms.alarms.delete_alarm %}
+        <td>
+          {% if perms.alarms.change_alarm %}
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'alarms:edit' a.id %}">编辑</a>
+          {% endif %}
+          {% if perms.alarms.delete_alarm %}
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'alarms:delete' a.id %}">删除</a>
+          {% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

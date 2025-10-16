@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">设备列表</h4>
+    <div class="d-flex gap-2">
+      <form method="get" class="d-flex" role="search">
+        <input name="q" value="{{ q }}" class="form-control" placeholder="搜索名称/类型/位置">
+        <button class="btn btn-outline-secondary ms-2" type="submit">搜索</button>
+      </form>
+          {% if perms.devices.add_device %}<a href="{% url 'devices:add' %}" class="btn btn-success btn-sm ms-2 align-self-center">+ 新增设备</a>{% endif %}
+      {% if request.user.is_authenticated and perms.devices.add_device %}
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>ID</th><th>名称</th><th>类型</th><th>位置</th><th>状态</th><th>创建时间</th>
+          {% if request.user.is_authenticated and perms.devices.change_device or perms.devices.delete_device %}
+            <th style="width:140px">操作</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in devices %}
+        <tr>
+          <td>{{ d.id }}</td>
+          <td>{{ d.name }}</td>
+          <td>{{ d.device_type }}</td>
+          <td>{{ d.location }}</td>
+          <td>{{ d.status }}</td>
+          <td>{{ d.created_at|default:"" }}</td>
+          {% if request.user.is_authenticated and perms.devices.change_device or perms.devices.delete_device %}
+          <td>
+            {% if perms.devices.change_device %}
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'devices:edit' d.id %}">编辑</a>
+            {% endif %}
+            {% if perms.devices.delete_device %}
+              <a class="btn btn-sm btn-outline-danger" href="{% url 'devices:delete' d.id %}">删除</a>
+            {% endif %}
+          </td>
+          {% endif %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center text-muted py-4">暂无数据</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

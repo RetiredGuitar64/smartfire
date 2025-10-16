@@ -1,0 +1,30 @@
+<div class="container py-4">
+  <div class="card shadow-sm border-0 rounded-4" style="max-width: 680px; margin: auto;">
+    <div class="card-body">
+      <h4 class="card-title mb-3 text-center">{{ title }}</h4>
+
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger py-2">
+        {{ form.non_field_errors }}
+      </div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+            {% for e in field.errors %}<div class="invalid-feedback d-block">{{ e }}</div>{% endfor %}
+          </div>
+        {% endfor %}
+
+        <div class="d-flex justify-content-center mt-4">
+          <button type="submit" class="btn btn-primary px-4">保存</button>
+          <a href="javascript:history.back()" class="btn btn-outline-secondary ms-2">返回</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

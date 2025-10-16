@@ -1,26 +1,25 @@
 {% extends "base.html" %}
-{% block title %}设备管理 · 智慧消防{% endblock %}
 {% block content %}
-<h1 class="mb-4">设备列表</h1>
-
-<form class="mb-3" method="get">
-  <div class="input-group">
-    <input type="text" name="q" class="form-control" placeholder="搜索设备名称或位置..." value="{{ q }}">
-    <button class="btn btn-primary" type="submit">搜索</button>
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h3 class="m-0">设备列表</h3>
+  <div>
+    <form class="d-inline" method="get" action=".">
+      <input type="text" name="q" value="{{ q|default:'' }}" class="form-control form-control-sm d-inline-block" style="width:200px" placeholder="搜索设备...">
+    </form>
+    {% if request.user.is_authenticated and perms.devices.add_device %}
+      <a class="btn btn-success btn-sm ms-2" href="{% url 'devices:add' %}">+ 新增设备</a>
+    {% endif %}
   </div>
-</form>
+</div>
 
-{% if devices %}
 <div class="table-responsive">
-  <table class="table table-striped table-sm align-middle">
+  <table class="table table-striped align-middle">
     <thead>
       <tr>
-        <th>ID</th>
-        <th>名称</th>
-        <th>类型</th>
-        <th>位置</th>
-        <th>状态</th>
-        <th>创建时间</th>
+        <th>ID</th><th>名称</th><th>设备类型</th><th>安装位置</th><th>状态</th>
+        {% if request.user.is_authenticated and perms.devices.change_device or perms.devices.delete_device %}
+          <th style="width:140px">操作</th>
+        {% endif %}
       </tr>
     </thead>
     <tbody>
@@ -28,24 +27,24 @@
       <tr>
         <td>{{ d.id }}</td>
         <td>{{ d.name }}</td>
-        <td>{{ d.device_type }}</td>
-        <td>{{ d.location }}</td>
+        <td>{% firstof d.device_type d.type d.category "" %}</td>
+        <td>{% firstof d.location d.place d.room "" %}</td>
+        <td>{% firstof d.status d.state "" %}</td>
+        {% if request.user.is_authenticated and perms.devices.change_device or perms.devices.delete_device %}
         <td>
-          {% if d.status == 'normal' %}
-            <span class="badge bg-success">正常</span>
-          {% elif d.status == 'fault' %}
-            <span class="badge bg-warning text-dark">故障</span>
-          {% else %}
-            <span class="badge bg-secondary">离线</span>
+          {% if perms.devices.change_device %}
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'devices:edit' d.id %}">编辑</a>
+          {% endif %}
+          {% if perms.devices.delete_device %}
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'devices:delete' d.id %}">删除</a>
           {% endif %}
         </td>
-        <td>{{ d.created_at|date:"Y-m-d H:i" }}</td>
+        {% endif %}
       </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center text-muted">暂无设备</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
-{% else %}
-<p class="text-muted">暂无设备记录。</p>
-{% endif %}
 {% endblock %}

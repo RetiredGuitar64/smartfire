@@ -50,3 +50,33 @@ class AlarmDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "报警已删除")
         return super().delete(request, *args, **kwargs)
+
+
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import CreateView, UpdateView, DeleteView
+from .models import Alarm
+from .forms import AlarmForm
+
+class AlarmCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    model = Alarm
+    form_class = AlarmForm
+    template_name = "alarms/alarm_form.html"
+    permission_required = "alarms.add_alarm"
+    success_url = reverse_lazy("alarms:list")
+    raise_exception = True
+
+class AlarmUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    model = Alarm
+    form_class = AlarmForm
+    template_name = "alarms/alarm_form.html"
+    permission_required = "alarms.change_alarm"
+    success_url = reverse_lazy("alarms:list")
+    raise_exception = True
+
+class AlarmDeleteView(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
+    model = Alarm
+    template_name = "alarms/alarm_confirm_delete.html"
+    permission_required = "alarms.delete_alarm"
+    success_url = reverse_lazy("alarms:list")
+    raise_exception = True

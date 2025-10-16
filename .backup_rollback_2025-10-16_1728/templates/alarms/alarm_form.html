@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 820px;">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-0">
+      <h5 class="m-0">
+        {% if form.instance.pk %}编辑报警{% else %}新增报警{% endif %}
+      </h5>
+    </div>
+    <div class="card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger py-2">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="row g-3">
+          <!-- 所属设备 -->
+          {% if form.device %}
+          <div class="col-md-6">
+            <label class="form-label">所属设备</label>
+            {{ form.device|add_class:"form-select" }}
+            {% if form.device.errors %}<div class="text-danger small">{{ form.device.errors }}</div>{% endif %}
+          </div>
+          {% endif %}
+
+          <!-- 报警类型 -->
+          {% if form.alarm_type %}
+          <div class="col-md-6">
+            <label class="form-label">报警类型</label>
+            {{ form.alarm_type|add_class:"form-select" }}
+            {% if form.alarm_type.errors %}<div class="text-danger small">{{ form.alarm_type.errors }}</div>{% endif %}
+          </div>
+          {% endif %}
+
+          <!-- 报警状态 -->
+          {% if form.status %}
+          <div class="col-md-6">
+            <label class="form-label">报警状态</label>
+            {{ form.status|add_class:"form-select" }}
+            {% if form.status.errors %}<div class="text-danger small">{{ form.status.errors }}</div>{% endif %}
+          </div>
+          {% endif %}
+
+          <!-- 报警时间 -->
+          {% if form.timestamp %}
+          <div class="col-md-6">
+            <label class="form-label">报警时间</label>
+            {{ form.timestamp|add_class:"form-control" }}
+            {% if form.timestamp.errors %}<div class="text-danger small">{{ form.timestamp.errors }}</div>{% endif %}
+          </div>
+          {% endif %}
+
+          <!-- 报警内容/描述（兼容不同字段名） -->
+          {% if form.message %}
+          <div class="col-12">
+            <label class="form-label">报警内容</label>
+            {{ form.message|add_class:"form-control" }}
+            {% if form.message.errors %}<div class="text-danger small">{{ form.message.errors }}</div>{% endif %}
+          </div>
+          {% endif %}
+
+          {% if form.description %}
+          <div class="col-12">
+            <label class="form-label">详细描述</label>
+            {{ form.description|add_class:"form-control" }}
+            {% if form.description.errors %}<div class="text-danger small">{{ form.description.errors }}</div>{% endif %}
+          </div>
+          {% endif %}
+
+          <!-- 其它可能存在的字段（避免丢字段） -->
+          {% for f in form %}
+            {% if f.name not in "device,alarm_type,status,timestamp,message,description" %}
+              <div class="col-12">
+                <label class="form-label">{{ f.label }}</label>
+                {{ f|add_class:"form-control" }}
+                {% if f.errors %}<div class="text-danger small">{{ f.errors }}</div>{% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <a href="{% url 'alarms:list' %}" class="btn btn-outline-secondary">取消</a>
+          <button type="submit" class="btn btn-primary">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .form-label{ font-weight:600; }
+</style>
+{% endblock %}

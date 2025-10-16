@@ -50,3 +50,32 @@ class DeviceDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "设备已删除")
         return super().delete(request, *args, **kwargs)
+
+
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.generic import CreateView, UpdateView, DeleteView
+from .models import Device
+
+class DeviceCreateView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    model = Device
+    fields = ["name","device_type","location","status"]
+    template_name = "devices/device_form.html"
+    permission_required = "devices.add_device"
+    success_url = reverse_lazy("devices:list")
+    raise_exception = True  # 无权限抛出 403
+
+class DeviceUpdateView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    model = Device
+    fields = ["name","device_type","location","status"]
+    template_name = "devices/device_form.html"
+    permission_required = "devices.change_device"
+    success_url = reverse_lazy("devices:list")
+    raise_exception = True
+
+class DeviceDeleteView(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
+    model = Device
+    template_name = "devices/device_confirm_delete.html"
+    permission_required = "devices.delete_device"
+    success_url = reverse_lazy("devices:list")
+    raise_exception = True
