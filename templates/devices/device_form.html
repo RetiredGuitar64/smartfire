@@ -17,26 +17,25 @@
         </div>
         <div class="col-md-6">
           <label class="form-label">设备类型<span class="text-danger">*</span></label>
-          {% firstof form.device_type form.type form.category as _dtype %}
-          {{ _dtype }}
+          {% firstof form.device_type form.type form.category as dtype %}
+          {{ dtype }}
         </div>
         <div class="col-md-6">
           <label class="form-label">安装位置</label>
-          {% firstof form.location form.place form.room as _loc %}
-          {{ _loc }}
+          {% firstof form.location form.place form.room as loc %}
+          {{ loc }}
         </div>
         <div class="col-md-6">
           <label class="form-label">状态</label>
-          {% firstof form.status form.state as _st %}
-          {{ _st }}
+          {% firstof form.status form.state as st %}
+          {{ st }}
         </div>
       </div>
 
-      {% comment %} 渲染其它未列出的字段 {% endcomment %}
       {% for f in form.hidden_fields %}{{ f }}{% endfor %}
       <div class="mt-3">
         {% for f in form.visible_fields %}
-          {% if f.name not in ('name','device_type','type','category','location','place','room','status','state') %}
+          {% if f.name != 'name' and f.name != 'device_type' and f.name != 'type' and f.name != 'category' and f.name != 'location' and f.name != 'place' and f.name != 'room' and f.name != 'status' and f.name != 'state' %}
             <div class="mb-2">
               <label class="form-label">{{ f.label }}</label>
               {{ f }}
@@ -56,14 +55,13 @@
 </div>
 
 <script>
-  // 自动补齐表单控件样式
-  (function(){
-    document.querySelectorAll('input[type=text],input[type=number],input[type=datetime-local],textarea,select').forEach(function(el){
-      if(!el.className || !/form-(control|select)/.test(el.className)){
-        if(el.tagName === 'SELECT'){ el.classList.add('form-select'); }
-        else { el.classList.add('form-control'); }
-      }
-    });
-  })();
+(function(){
+  document.querySelectorAll('input[type=text],input[type=number],input[type=datetime-local],textarea,select').forEach(function(el){
+    if(!el.className || !/form-(control|select)/.test(el.className)){
+      if(el.tagName === 'SELECT'){ el.classList.add('form-select'); }
+      else { el.classList.add('form-control'); }
+    }
+  });
+})();
 </script>
 {% endblock %}

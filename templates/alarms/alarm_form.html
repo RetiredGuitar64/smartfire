@@ -13,36 +13,36 @@
       <div class="row g-3">
         <div class="col-md-6">
           <label class="form-label">设备<span class="text-danger">*</span></label>
-          {% firstof form.device form.device_id as _dev %}
-          {{ _dev }}
+          {% firstof form.device form.device_id as dev %}
+          {{ dev }}
         </div>
         <div class="col-md-6">
           <label class="form-label">类型</label>
-          {% firstof form.alarm_type form.type form.category as _atype %}
-          {{ _atype }}
+          {% firstof form.alarm_type form.type form.category as atype %}
+          {{ atype }}
         </div>
         <div class="col-md-6">
           <label class="form-label">状态</label>
-          {% firstof form.status form.state as _st %}
-          {{ _st }}
+          {% firstof form.status form.state as st %}
+          {{ st }}
         </div>
         <div class="col-md-6">
           <label class="form-label">时间</label>
-          {% firstof form.timestamp form.created_at form.time as _ts %}
-          {{ _ts }}
+          {% firstof form.timestamp form.created_at form.time as ts %}
+          {{ ts }}
         </div>
         <div class="col-12">
           <label class="form-label">描述</label>
-          {% firstof form.description form.message form.details form.content form.note as _desc %}
-          {{ _desc }}
+          {% firstof form.description form.message form.details form.content form.note as desc %}
+          {{ desc }}
         </div>
       </div>
 
-      {% comment %} 渲染其它未列出的字段 {% endcomment %}
       {% for f in form.hidden_fields %}{{ f }}{% endfor %}
+
       <div class="mt-3">
         {% for f in form.visible_fields %}
-          {% if f.name not in ('device','device_id','alarm_type','type','category','status','state','timestamp','created_at','time','description','message','details','content','note') %}
+          {% if f.name != 'device' and f.name != 'device_id' and f.name != 'alarm_type' and f.name != 'type' and f.name != 'category' and f.name != 'status' and f.name != 'state' and f.name != 'timestamp' and f.name != 'created_at' and f.name != 'time' and f.name != 'description' and f.name != 'message' and f.name != 'details' and f.name != 'content' and f.name != 'note' %}
             <div class="mb-2">
               <label class="form-label">{{ f.label }}</label>
               {{ f }}
@@ -62,14 +62,13 @@
 </div>
 
 <script>
-  // 自动补齐表单控件样式
-  (function(){
-    document.querySelectorAll('input[type=text],input[type=number],input[type=datetime-local],textarea,select').forEach(function(el){
-      if(!el.className || !/form-(control|select)/.test(el.className)){
-        if(el.tagName === 'SELECT'){ el.classList.add('form-select'); }
-        else { el.classList.add('form-control'); }
-      }
-    });
-  })();
+(function(){
+  document.querySelectorAll('input[type=text],input[type=number],input[type=datetime-local],textarea,select').forEach(function(el){
+    if(!el.className || !/form-(control|select)/.test(el.className)){
+      if(el.tagName === 'SELECT'){ el.classList.add('form-select'); }
+      else { el.classList.add('form-control'); }
+    }
+  });
+})();
 </script>
 {% endblock %}
