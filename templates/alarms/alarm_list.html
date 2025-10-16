@@ -1,30 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="d-flex align-items-center justify-content-between mb-3">
-  <h3 class="m-0">报警记录</h3>
-  <div>
-    <form class="d-inline" method="get" action=".">
-      <select name="status" class="form-select form-select-sm d-inline-block" style="width:160px">
-        <option value="">全部状态</option>
-        <option value="new" {% if status_filter == "new" %}selected{% endif %}>新产生</option>
-        <option value="ack" {% if status_filter == "ack" %}selected{% endif %}>已确认</option>
-        <option value="closed" {% if status_filter == "closed" %}selected{% endif %}>已关闭</option>
-      </select>
-      <button class="btn btn-outline-secondary btn-sm">筛选</button>
-    </form>
-    {% if request.user.is_authenticated and perms.alarms.add_alarm %}
-      <a class="btn btn-success btn-sm ms-2" href="{% url 'alarms:add' %}">+ 新增报警</a>
-    {% endif %}
-  </div>
-</div>
-
-<div class="table-responsive">
-  <table class="table table-striped align-middle">
+<div class="container mt-4">
+  <h2>报警记录</h2>
+  <table class="table table-bordered table-striped align-middle">
     <thead>
       <tr>
-        <th>ID</th><th>设备</th><th>类型</th><th>状态</th><th>时间</th><th>描述</th>
-        {% if request.user.is_authenticated and perms.alarms.change_alarm or perms.alarms.delete_alarm %}
-          <th style="width:140px">操作</th>
+        <th>ID</th>
+        <th>设备</th>
+        <th>状态</th>
+        <th>时间</th>
+        <th>描述</th>
+        {% if perms.alarms.change_alarm or perms.alarms.delete_alarm %}
+        <th>操作</th>
         {% endif %}
       </tr>
     </thead>
@@ -32,24 +19,32 @@
       {% for a in alarms %}
       <tr>
         <td>{{ a.id }}</td>
-        <td>{% firstof a.device.name a.device_id "" %}</td>
-        <td>{% firstof a.alarm_type a.type a.category "" %}</td>
-        <td>{% firstof a.status "" %}</td>
-        <td>{% firstof a.timestamp a.created_at a.time "" %|date:"Y-m-d H:i"}</td>
-        <td class="text-truncate" style="max-width:320px">{% firstof a.description a.message a.details a.content a.note "" %}</td>
-        {% if request.user.is_authenticated and perms.alarms.change_alarm or perms.alarms.delete_alarm %}
+        <td>{{ a.device }}</td>
+        <td>{{ a.status }}</td>
+        <td>
+          {% firstof a.timestamp a.created_at a.time as t %}
+          {% if t %}
+            {{ t|date:"Y-m-d H:i" }}
+          {% else %}
+            --
+          {% endif %}
+        </td>
+        <td>{% if a.description %}{{ a.description }}{% elif a.message %}{{ a.message }}{% elif a.detail %}{{ a.detail }}{% else %}--{% endif %}</td>
+        {% if perms.alarms.change_alarm or perms.alarms.delete_alarm %}
         <td>
           {% if perms.alarms.change_alarm %}
-            <a class="btn btn-sm btn-outline-primary" href="{% url 'alarms:edit' a.id %}">编辑</a>
+            <a href="{% url 'alarms:edit' a.id %}" class="btn btn-sm btn-outline-primary">编辑</a>
           {% endif %}
           {% if perms.alarms.delete_alarm %}
-            <a class="btn btn-sm btn-outline-danger" href="{% url 'alarms:delete' a.id %}">删除</a>
+            <a href="{% url 'alarms:delete' a.id %}" class="btn btn-sm btn-outline-danger">删除</a>
           {% endif %}
         </td>
         {% endif %}
       </tr>
       {% empty %}
-      <tr><td colspan="7" class="text-center text-muted">暂无报警</td></tr>
+      <tr>
+        <td colspan="6" class="text-center text-muted">暂无报警记录</td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>

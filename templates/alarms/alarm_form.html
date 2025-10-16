@@ -11,35 +11,54 @@
     <form method="post" novalidate>
       {% csrf_token %}
       <div class="row g-3">
+        {% if form.device or form.device_id %}
         <div class="col-md-6">
           <label class="form-label">设备<span class="text-danger">*</span></label>
           {% firstof form.device form.device_id as dev %}
           {{ dev }}
         </div>
+        {% endif %}
+
+        {% if form.alarm_type or form.type or form.category %}
         <div class="col-md-6">
-          <label class="form-label">类型</label>
           {% firstof form.alarm_type form.type form.category as atype %}
-          {{ atype }}
-        </div>
+          {% if atype %}
+          <div class="col-md-6">
+            <label class="form-label">类型</label>
+            {{ atype }}
+          </div>
+          {% endif %}
+        {% endif %}
+
+        {% if form.status or form.state %}
         <div class="col-md-6">
           <label class="form-label">状态</label>
           {% firstof form.status form.state as st %}
           {{ st }}
         </div>
+        {% endif %}
+
+        {% if form.timestamp or form.created_at or form.time %}
         <div class="col-md-6">
-          <label class="form-label">时间</label>
           {% firstof form.timestamp form.created_at form.time as ts %}
-          {{ ts }}
-        </div>
+          {% if ts %}
+          <div class="col-md-6">
+            <label class="form-label">时间</label>
+            {{ ts }}
+          </div>
+          {% endif %}
+        {% endif %}
+
+        {% if form.description or form.message or form.details or form.content or form.note %}
         <div class="col-12">
           <label class="form-label">描述</label>
           {% firstof form.description form.message form.details form.content form.note as desc %}
           {{ desc }}
         </div>
+        {% endif %}
       </div>
 
       {% for f in form.hidden_fields %}{{ f }}{% endfor %}
-
       <div class="mt-3">
         {% for f in form.visible_fields %}
           {% if f.name != 'device' and f.name != 'device_id' and f.name != 'alarm_type' and f.name != 'type' and f.name != 'category' and f.name != 'status' and f.name != 'state' and f.name != 'timestamp' and f.name != 'created_at' and f.name != 'time' and f.name != 'description' and f.name != 'message' and f.name != 'details' and f.name != 'content' and f.name != 'note' %}
